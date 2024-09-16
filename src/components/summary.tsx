@@ -7,12 +7,12 @@ import { Separator } from './ui/separator'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { getSummary } from '../http/get-summary'
 import dayjs from 'dayjs'
-import ptBR from 'dayjs/locale/pt-BR'
+import '../../node_modules/dayjs/locale/pt-br'
 import { PendingGoals } from './pending-goals'
 import { EmptyGoals } from './empty-goals'
 import { WithCompletion } from './with-completion'
 
-dayjs.locale(ptBR)
+dayjs.locale('pt_br')
 
 export function Summary() {
   const queryClient = useQueryClient();
