@@ -1,5 +1,6 @@
 export default async function deleteGoal(goalId: string) {
-  await fetch('http://localhost:3333/delete-goal', {
+  const apiUrl = import.meta.env.VITE_API_URL
+  await fetch(`${apiUrl}/delete-goal`, {
     method: 'POST',
     headers: {
       "Content-Type": 'application/json',
