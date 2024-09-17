@@ -27,9 +27,9 @@ export function PendingGoals() {
 
   // Checa se o goal title já foi concluído hoje
   const titlesCompletedToday = new Set()
-  if (summaryData?.goalsPerDay && summaryData.goalsPerDay[today]) {
+  if (summaryData?.goalsPerDay?.[today]) {
     for (const goal of summaryData.goalsPerDay[today]) {
-      titlesCompletedToday.add(goal.title)
+      titlesCompletedToday.add(goal.title);
     }
   }
 

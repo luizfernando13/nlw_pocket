@@ -4,8 +4,24 @@ import { Separator } from './ui/separator'
 import dayjs from 'dayjs'
 import undoGoalCompletion from "../http/undo-goal-completion"
 import { PendingGoals } from './pending-goals'
+import type { QueryClient } from '@tanstack/react-query';
 
-export function WithCompletion({ data, queryClient }) {
+interface WithCompletionProps {
+  data: {
+    completed: number;
+    total: number;
+    goalsPerDay: {
+      [key: string]: {
+        id: string;
+        title: string;
+        completedAt: string;
+      }[];
+    };
+  };
+  queryClient: QueryClient;
+}
+
+export function WithCompletion({ data, queryClient }: WithCompletionProps) {
   
   async function handleUndoCompletionGoal(goalId: string) {
     await undoGoalCompletion(goalId);
@@ -45,7 +61,7 @@ export function WithCompletion({ data, queryClient }) {
 
         {Object.entries(data.goalsPerDay).map(([date, goals]) => {
           const goalDate = dayjs(date).startOf('day');
-          let weekDay;
+          let weekDay: string;
 
           // Verificar se a data é hoje, ontem, ou outra
           if (goalDate.isSame(today, 'day')) {

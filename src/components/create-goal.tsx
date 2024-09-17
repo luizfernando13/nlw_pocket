@@ -64,14 +64,16 @@ export function CreateGoal() {
       setTimeout(() => {
         setSuccessMessage(null)
       }, 3000)
-    } catch (error) {
-      // Exibir mensagem de erro se a meta já existir
-      setErrorMessage(error.message)
-
-      // Limpar a mensagem de erro após 3 segundos
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        setErrorMessage(error.message);
+      } else {
+        setErrorMessage('Ocorreu um erro desconhecido.');
+      }
+    
       setTimeout(() => {
-        setErrorMessage(null)
-      }, 3000)
+        setErrorMessage(null);
+      }, 3000);
     }
   }
 
