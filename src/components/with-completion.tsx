@@ -7,7 +7,7 @@ import { PendingGoals } from './pending-goals'
 import type { QueryClient } from '@tanstack/react-query';
 import '../../node_modules/dayjs/locale/pt-br'
 
-dayjs.locale('pt_br')
+dayjs.locale('pt-br')
 console.log(dayjs.locale())
 
 interface WithCompletionProps {
