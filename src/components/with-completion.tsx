@@ -5,6 +5,9 @@ import dayjs from 'dayjs'
 import undoGoalCompletion from "../http/undo-goal-completion"
 import { PendingGoals } from './pending-goals'
 import type { QueryClient } from '@tanstack/react-query';
+import '../../node_modules/dayjs/locale/pt-br'
+
+dayjs.locale('pt_br')
 
 interface WithCompletionProps {
   data: {
