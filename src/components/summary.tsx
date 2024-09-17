@@ -10,7 +10,7 @@ import '../../node_modules/dayjs/locale/pt-br'
 import { PendingGoals } from './pending-goals'
 import { WithCompletion } from './with-completion'
 
-dayjs.locale('pt_br')
+dayjs.locale('pt-br')
 
 export function Summary() {
   const queryClient = useQueryClient();
