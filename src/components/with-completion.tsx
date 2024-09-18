@@ -5,15 +5,14 @@ import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
 import 'dayjs/locale/pt-br';
+import type { QueryClient } from '@tanstack/react-query';
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
 dayjs.locale('pt-br');
 dayjs.tz.setDefault("America/Sao_Paulo"); // Configura o fuso horário padrão para São Paulo
 
-import undoGoalCompletion from "../http/undo-goal-completion";
 import { PendingGoals } from './pending-goals';
-import type { QueryClient } from '@tanstack/react-query';
 
 interface WithCompletionProps {
   data: {
@@ -31,6 +30,13 @@ interface WithCompletionProps {
 }
 
 export function WithCompletion({ data, queryClient }: WithCompletionProps) {
+
+  async function handleUndoCompletionGoal(goalId: string) {
+    await undoGoalCompletion(goalId);
+    queryClient.invalidateQueries({ queryKey: ['summary'] });
+    queryClient.invalidateQueries({ queryKey: ['pending-goals'] });
+  }
+
   const completedPercentage = Math.round((data?.completed * 100) / data?.total);
 
   // Define as datas de hoje e ontem utilizando o fuso horário de São Paulo
