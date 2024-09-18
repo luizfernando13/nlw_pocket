@@ -5,8 +5,11 @@ import dayjs from 'dayjs'
 import undoGoalCompletion from "../http/undo-goal-completion"
 import { PendingGoals } from './pending-goals'
 import type { QueryClient } from '@tanstack/react-query';
-import '../../node_modules/dayjs/locale/pt-br'
+import 'dayjs/locale/pt-br'
+import utc from 'dayjs/plugin/utc';
 
+dayjs.extend(utc);
+dayjs.utc();
 dayjs.locale('pt-br')
 console.log(dayjs.locale())
 
