@@ -1,7 +1,7 @@
 import { CheckCircle2 } from 'lucide-react';
 import { Progress, ProgressIndicator } from './ui/progress-bar';
 import { Separator } from './ui/separator';
-import undoGoalCompletion from "../http/undo-goal-completion"
+import undoGoalCompletion from "../http/undo-goal-completion";
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
@@ -31,7 +31,6 @@ interface WithCompletionProps {
 }
 
 export function WithCompletion({ data, queryClient }: WithCompletionProps) {
-
   async function handleUndoCompletionGoal(goalId: string) {
     await undoGoalCompletion(goalId);
     queryClient.invalidateQueries({ queryKey: ['summary'] });
@@ -41,8 +40,8 @@ export function WithCompletion({ data, queryClient }: WithCompletionProps) {
   const completedPercentage = Math.round((data?.completed * 100) / data?.total);
 
   // Define as datas de hoje e ontem utilizando o fuso horário de São Paulo
-  const today = dayjs().startOf('day');
-  const yesterday = dayjs().subtract(1, 'day').startOf('day');
+  const today = dayjs().tz('America/Sao_Paulo').startOf('day');
+  const yesterday = dayjs().tz('America/Sao_Paulo').subtract(1, 'day').startOf('day');
 
   return (
     <>
@@ -69,7 +68,8 @@ export function WithCompletion({ data, queryClient }: WithCompletionProps) {
         <h2 className="text-xl font-medium">Sua semana</h2>
 
         {Object.entries(data.goalsPerDay).map(([date, goals]) => {
-          const goalDate = dayjs(date).tz('America/Sao_Paulo').startOf('day');
+          // Aqui estamos garantindo que as datas recebidas sejam ajustadas para o fuso horário de São Paulo
+          const goalDate = dayjs.utc(date).tz('America/Sao_Paulo').startOf('day');
           let weekDay;
 
           // Verificar se a data é hoje, ontem, ou outra
@@ -92,7 +92,8 @@ export function WithCompletion({ data, queryClient }: WithCompletionProps) {
 
               <ul className="flex flex-col gap-3">
                 {goals.map(goal => {
-                  const time = dayjs(goal.completedAt).tz("America/Sao_Paulo").format('HH:mm');
+                  // Converter `completedAt` também para o fuso horário correto
+                  const time = dayjs.utc(goal.completedAt).tz('America/Sao_Paulo').format('HH:mm');
 
                   return (
                     <li key={goal.id} className="flex items-center gap-2">
