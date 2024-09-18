@@ -1,6 +1,7 @@
 import { CheckCircle2 } from 'lucide-react';
 import { Progress, ProgressIndicator } from './ui/progress-bar';
 import { Separator } from './ui/separator';
+import undoGoalCompletion from "../http/undo-goal-completion"
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
