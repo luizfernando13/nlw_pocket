@@ -68,7 +68,7 @@ export function WithCompletion({ data, queryClient }: WithCompletionProps) {
         <h2 className="text-xl font-medium">Sua semana</h2>
 
         {Object.entries(data.goalsPerDay).map(([date, goals]) => {
-          const goalDate = dayjs.tz(date).startOf('day');
+          const goalDate = dayjs.utc(date).tz("America/Sao_Paulo").startOf('day');
           let weekDay;
 
           // Verificar se a data é hoje, ontem, ou outra
@@ -80,7 +80,7 @@ export function WithCompletion({ data, queryClient }: WithCompletionProps) {
             weekDay = dayjs.tz(date).format('dddd'); // Se for outro dia, usa o nome do dia
           }
 
-          const formattedDate = dayjs.tz(date).format('D [de] MMMM');
+          const formattedDate = dayjs.utc(date).tz("America/Sao_Paulo").format('D [de] MMMM');
 
           return (
             <div key={date} className="flex flex-col gap-4">
@@ -91,7 +91,7 @@ export function WithCompletion({ data, queryClient }: WithCompletionProps) {
 
               <ul className="flex flex-col gap-3">
                 {goals.map(goal => {
-                  const time = dayjs.tz(goal.completedAt).format('HH:mm')
+                  const time = dayjs.utc(goal.completedAt).tz("America/Sao_Paulo").format('HH:mm');
 
                   return (
                     <li key={goal.id} className="flex items-center gap-2">
