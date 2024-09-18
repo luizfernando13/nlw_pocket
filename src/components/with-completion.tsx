@@ -1,19 +1,14 @@
-import { CheckCircle2 } from 'lucide-react';
-import { Progress, ProgressIndicator } from './ui/progress-bar';
-import { Separator } from './ui/separator';
-import undoGoalCompletion from "../http/undo-goal-completion";
-import dayjs from 'dayjs';
-import utc from 'dayjs/plugin/utc';
-import timezone from 'dayjs/plugin/timezone'; // Certifique-se de importar corretamente
-import 'dayjs/locale/pt-br';
+import { CheckCircle2 } from 'lucide-react'
+import { Progress, ProgressIndicator } from './ui/progress-bar'
+import { Separator } from './ui/separator'
+import dayjs from 'dayjs'
+import undoGoalCompletion from "../http/undo-goal-completion"
+import { PendingGoals } from './pending-goals'
 import type { QueryClient } from '@tanstack/react-query';
+import '../../node_modules/dayjs/locale/pt-br'
 
-dayjs.extend(utc);
-dayjs.extend(timezone); // Estenda o plugin de timezone corretamente
-dayjs.locale('pt-br');
-dayjs.tz.setDefault("America/Sao_Paulo"); // Defina o fuso horário padrão
-
-import { PendingGoals } from './pending-goals';
+dayjs.locale('pt_br')
+console.log(dayjs.locale())
 
 interface WithCompletionProps {
   data: {
@@ -31,17 +26,18 @@ interface WithCompletionProps {
 }
 
 export function WithCompletion({ data, queryClient }: WithCompletionProps) {
+
   async function handleUndoCompletionGoal(goalId: string) {
     await undoGoalCompletion(goalId);
     queryClient.invalidateQueries({ queryKey: ['summary'] });
     queryClient.invalidateQueries({ queryKey: ['pending-goals'] });
   }
 
-  const completedPercentage = Math.round((data?.completed * 100) / data?.total);
+  const completedPercentage = Math.round((data?.completed * 100) / data?.total)
 
-  // Define as datas de hoje e ontem utilizando o fuso horário de São Paulo
-  const today = dayjs.tz().startOf('day'); // Usando dayjs.tz() para São Paulo
-  const yesterday = dayjs.tz().subtract(1, 'day').startOf('day');
+  // Define as datas de hoje e ontem
+  const today = dayjs().startOf('day');
+  const yesterday = dayjs().subtract(1, 'day').startOf('day');
 
   return (
     <>
@@ -68,9 +64,8 @@ export function WithCompletion({ data, queryClient }: WithCompletionProps) {
         <h2 className="text-xl font-medium">Sua semana</h2>
 
         {Object.entries(data.goalsPerDay).map(([date, goals]) => {
-          // Aqui estamos garantindo que as datas recebidas sejam ajustadas para o fuso horário de São Paulo
-          const goalDate = dayjs.tz(date, 'America/Sao_Paulo').startOf('day');
-          let weekDay;
+          const goalDate = dayjs(date).startOf('day');
+          let weekDay: string;
 
           // Verificar se a data é hoje, ontem, ou outra
           if (goalDate.isSame(today, 'day')) {
@@ -78,10 +73,10 @@ export function WithCompletion({ data, queryClient }: WithCompletionProps) {
           } else if (goalDate.isSame(yesterday, 'day')) {
             weekDay = 'ontem';
           } else {
-            weekDay = goalDate.format('dddd'); // Se for outro dia, usa o nome do dia
+            weekDay = dayjs(date).format('dddd'); // Se for outro dia, usa o nome do dia
           }
 
-          const formattedDate = goalDate.format('D [de] MMMM');
+          const formattedDate = dayjs(date).format('D [ De ] MMMM');
 
           return (
             <div key={date} className="flex flex-col gap-4">
@@ -92,8 +87,7 @@ export function WithCompletion({ data, queryClient }: WithCompletionProps) {
 
               <ul className="flex flex-col gap-3">
                 {goals.map(goal => {
-                  // Converter `completedAt` também para o fuso horário correto
-                  const time = dayjs.tz(goal.completedAt, 'America/Sao_Paulo').format('HH:mm');
+                  const time = dayjs(goal.completedAt).format('HH:mm')
 
                   return (
                     <li key={goal.id} className="flex items-center gap-2">
@@ -111,13 +105,13 @@ export function WithCompletion({ data, queryClient }: WithCompletionProps) {
                         </button>
                       </span>
                     </li>
-                  );
+                  )
                 })}
               </ul>
             </div>
-          );
+          )
         })}
       </div>
     </>
-  );
+  )
 }
