@@ -7,9 +7,11 @@ import { PendingGoals } from './pending-goals'
 import type { QueryClient } from '@tanstack/react-query';
 import 'dayjs/locale/pt-br'
 import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone'
 
 dayjs.extend(utc);
-dayjs.utc();
+dayjs.extend(timezone)
+dayjs.tz.setDefault("America/Sao_Paulo")
 dayjs.locale('pt-br')
 console.log(dayjs.locale())
 
