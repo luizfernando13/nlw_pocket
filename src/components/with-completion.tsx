@@ -1,18 +1,18 @@
-import { CheckCircle2 } from 'lucide-react'
-import { Progress, ProgressIndicator } from './ui/progress-bar'
-import { Separator } from './ui/separator'
-import dayjs from 'dayjs'
-import utc from 'dayjs/plugin/utc'
-import timezone from 'dayjs/plugin/timezone'
-import 'dayjs/locale/pt-br'
+import { CheckCircle2 } from 'lucide-react';
+import { Progress, ProgressIndicator } from './ui/progress-bar';
+import { Separator } from './ui/separator';
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
+import 'dayjs/locale/pt-br';
 
-dayjs.extend(utc)
-dayjs.extend(timezone)
-dayjs.locale('pt-br')
-dayjs.tz.setDefault("America/Sao_Paulo") // Configura o fuso horário padrão para São Paulo
+dayjs.extend(utc);
+dayjs.extend(timezone);
+dayjs.locale('pt-br');
+dayjs.tz.setDefault("America/Sao_Paulo"); // Configura o fuso horário padrão para São Paulo
 
-import undoGoalCompletion from "../http/undo-goal-completion"
-import { PendingGoals } from './pending-goals'
+import undoGoalCompletion from "../http/undo-goal-completion";
+import { PendingGoals } from './pending-goals';
 import type { QueryClient } from '@tanstack/react-query';
 
 interface WithCompletionProps {
@@ -31,17 +31,11 @@ interface WithCompletionProps {
 }
 
 export function WithCompletion({ data, queryClient }: WithCompletionProps) {
-  async function handleUndoCompletionGoal(goalId: string) {
-    await undoGoalCompletion(goalId);
-    queryClient.invalidateQueries({ queryKey: ['summary'] });
-    queryClient.invalidateQueries({ queryKey: ['pending-goals'] });
-  }
-
-  const completedPercentage = Math.round((data?.completed * 100) / data?.total)
+  const completedPercentage = Math.round((data?.completed * 100) / data?.total);
 
   // Define as datas de hoje e ontem utilizando o fuso horário de São Paulo
-  const today = dayjs.tz().startOf('day');
-  const yesterday = dayjs.tz().subtract(1, 'day').startOf('day');
+  const today = dayjs().startOf('day');
+  const yesterday = dayjs().subtract(1, 'day').startOf('day');
 
   return (
     <>
@@ -68,7 +62,7 @@ export function WithCompletion({ data, queryClient }: WithCompletionProps) {
         <h2 className="text-xl font-medium">Sua semana</h2>
 
         {Object.entries(data.goalsPerDay).map(([date, goals]) => {
-          const goalDate = dayjs.utc(date).tz("America/Sao_Paulo").startOf('day');
+          const goalDate = dayjs(date).tz('America/Sao_Paulo').startOf('day');
           let weekDay;
 
           // Verificar se a data é hoje, ontem, ou outra
@@ -77,10 +71,10 @@ export function WithCompletion({ data, queryClient }: WithCompletionProps) {
           } else if (goalDate.isSame(yesterday, 'day')) {
             weekDay = 'ontem';
           } else {
-            weekDay = dayjs.tz(date).format('dddd'); // Se for outro dia, usa o nome do dia
+            weekDay = goalDate.format('dddd'); // Se for outro dia, usa o nome do dia
           }
 
-          const formattedDate = dayjs.utc(date).tz("America/Sao_Paulo").format('D [de] MMMM');
+          const formattedDate = goalDate.format('D [de] MMMM');
 
           return (
             <div key={date} className="flex flex-col gap-4">
@@ -91,7 +85,7 @@ export function WithCompletion({ data, queryClient }: WithCompletionProps) {
 
               <ul className="flex flex-col gap-3">
                 {goals.map(goal => {
-                  const time = dayjs.utc(goal.completedAt).tz("America/Sao_Paulo").format('HH:mm');
+                  const time = dayjs(goal.completedAt).tz("America/Sao_Paulo").format('HH:mm');
 
                   return (
                     <li key={goal.id} className="flex items-center gap-2">
@@ -117,5 +111,5 @@ export function WithCompletion({ data, queryClient }: WithCompletionProps) {
         })}
       </div>
     </>
-  )
+  );
 }
