@@ -4,11 +4,14 @@ import { Separator } from './ui/separator';
 import undoGoalCompletion from "../http/undo-goal-completion";
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
 import 'dayjs/locale/pt-br';
 import type { QueryClient } from '@tanstack/react-query';
 
 dayjs.extend(utc);
+dayjs.extend(timezone);
 dayjs.locale('pt-br');
+dayjs.tz.setDefault("America/Sao_Paulo"); // Configura o fuso horário padrão para São Paulo
 
 import { PendingGoals } from './pending-goals';
 
@@ -37,8 +40,8 @@ export function WithCompletion({ data, queryClient }: WithCompletionProps) {
   const completedPercentage = Math.round((data?.completed * 100) / data?.total);
 
   // Define as datas de hoje e ontem utilizando o fuso horário de São Paulo
-  const today = dayjs().startOf('day');
-  const yesterday = dayjs().subtract(1, 'day').startOf('day');
+  const today = dayjs().tz("America/Sao_Paulo").startOf('day');
+  const yesterday = dayjs().tz("America/Sao_Paulo").subtract(1, 'day').startOf('day');
 
   return (
     <>
@@ -66,7 +69,7 @@ export function WithCompletion({ data, queryClient }: WithCompletionProps) {
 
         {Object.entries(data.goalsPerDay).map(([date, goals]) => {
           // Aqui estamos garantindo que as datas recebidas sejam ajustadas para o fuso horário de São Paulo
-          const goalDate = dayjs.utc(date).startOf('day');
+          const goalDate = dayjs.utc(date).tz("America/Sao_Paulo").startOf('day');
           let weekDay;
 
           // Verificar se a data é hoje, ontem, ou outra
@@ -90,7 +93,7 @@ export function WithCompletion({ data, queryClient }: WithCompletionProps) {
               <ul className="flex flex-col gap-3">
                 {goals.map(goal => {
                   // Converter `completedAt` também para o fuso horário correto
-                  const time = dayjs.utc(goal.completedAt).format('HH:mm');
+                  const time = dayjs.utc(goal.completedAt).tz("America/Sao_Paulo").format('HH:mm');
 
                   return (
                     <li key={goal.id} className="flex items-center gap-2">
@@ -108,11 +111,11 @@ export function WithCompletion({ data, queryClient }: WithCompletionProps) {
                         </button>
                       </span>
                     </li>
-                  )
+                  );
                 })}
               </ul>
             </div>
-          )
+          );
         })}
       </div>
     </>
