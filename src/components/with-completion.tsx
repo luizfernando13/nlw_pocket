@@ -8,7 +8,6 @@ import type { QueryClient } from '@tanstack/react-query';
 import '../../node_modules/dayjs/locale/pt-br'
 
 dayjs.locale('pt_br')
-console.log(dayjs.locale())
 
 interface WithCompletionProps {
   data: {
