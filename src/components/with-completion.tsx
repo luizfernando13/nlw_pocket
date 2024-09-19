@@ -6,7 +6,11 @@ import undoGoalCompletion from "../http/undo-goal-completion"
 import { PendingGoals } from './pending-goals'
 import type { QueryClient } from '@tanstack/react-query';
 import '../../node_modules/dayjs/locale/pt-br'
+import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
 
+dayjs.extend(utc);
+dayjs.extend(timezone);
 dayjs.locale('pt_br')
 
 interface WithCompletionProps {
@@ -35,8 +39,8 @@ export function WithCompletion({ data, queryClient }: WithCompletionProps) {
   const completedPercentage = Math.round((data?.completed * 100) / data?.total)
 
   // Define as datas de hoje e ontem
-  const today = dayjs().startOf('day');
-  const yesterday = dayjs().subtract(1, 'day').startOf('day');
+  const today = dayjs.tz('America/Sao_Paulo').startOf('day');
+  const yesterday = dayjs.tz('America/Sao_Paulo').subtract(1, 'day').startOf('day');
 
   return (
     <>
@@ -63,7 +67,7 @@ export function WithCompletion({ data, queryClient }: WithCompletionProps) {
         <h2 className="text-xl font-medium">Sua semana</h2>
 
         {Object.entries(data.goalsPerDay).map(([date, goals]) => {
-          const goalDate = dayjs(date).startOf('day');
+          const goalDate = dayjs.tz(date, 'America/Sao_Paulo').startOf('day');
           let weekDay: string;
 
           // Verificar se a data é hoje, ontem, ou outra
